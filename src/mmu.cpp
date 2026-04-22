@@ -33,15 +33,14 @@ uint32_t Mmu::createProcess()
 
 void Mmu::addVariableToProcess(uint32_t pid, std::string var_name, DataType type, uint32_t size, uint32_t address)
 {
-    int i;
-    Process *proc = NULL;
     std::vector<Process*>::iterator it = std::find_if(_processes.begin(), _processes.end(), [pid](Process* p)
     { 
         return p != nullptr && p->pid == pid; 
     });
-
-    if (proc != NULL)
+    
+    if (it != _processes.end())
     {
+        Process *proc = *it;
         Variable *var = new Variable();
         var->name = var_name;
         var->type = type;
