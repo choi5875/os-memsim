@@ -12,6 +12,8 @@ typedef struct Variable {
     DataType type;
     uint32_t virtual_address;
     uint32_t size;
+    uint32_t element_count;
+    uint32_t element_size;
 } Variable;
 
 typedef struct Process {
@@ -25,12 +27,24 @@ private:
     uint32_t _max_size;
     std::vector<Process*> _processes;
 
+    Process* findProcess(uint32_t pid);
+
 public:
     Mmu(int memory_size);
     ~Mmu();
 
     uint32_t createProcess();
-    void addVariableToProcess(uint32_t pid, std::string var_name, DataType type, uint32_t size, uint32_t address);
+    bool processExists(uint32_t pid);
+    std::vector<uint32_t> getProcessIds();
+    void addVariableToProcess(uint32_t pid, std::string var_name, DataType type, uint32_t size, uint32_t address, uint32_t element_count, uint32_t element_size);
+    Variable* getVariable(uint32_t pid, std::string var_name);
+    bool variableExists(uint32_t pid, std::string var_name);
+    std::vector<Variable*> getVariables(uint32_t pid);
+    bool allocateFromFreeSpace(uint32_t pid, std::string var_name, DataType type, uint32_t size, uint32_t element_count, uint32_t element_size, uint32_t &out_address);
+    bool removeVariable(uint32_t pid, std::string var_name, Variable *removed);
+    bool removeVariable(uint32_t pid, std::string var_name);
+    bool removeProcess(uint32_t pid);
+    void mergeFreeSpace(uint32_t pid);
     void print();
 };
 
